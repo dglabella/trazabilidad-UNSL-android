@@ -11,7 +11,7 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AccesoService
+public class AccessService
 {
     public static String RESOURCE = "accesos";
     private final static int REQUEST_CONNECT_TIMEOUT_TOLERANCE = 20;
@@ -21,12 +21,11 @@ public class AccesoService
 
     public static void setCallBack(Callback<List<Acceso>> callBack)
     {
-        AccesoService.callBack = callBack;
+        AccessService.callBack = callBack;
     }
 
     public static void getAll()
     {
-
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(REQUEST_CONNECT_TIMEOUT_TOLERANCE, TimeUnit.SECONDS)
                 .readTimeout(REQUEST_READ_TIMEOUT_TOLERANCE, TimeUnit.SECONDS)
@@ -40,7 +39,7 @@ public class AccesoService
                 .build();
 
         JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
-        Call<List<Acceso>> call = jsonPlaceHolderAPI.getAccesos();
+        Call<List<Acceso>> call = jsonPlaceHolderAPI.getAccesses();
 
         //This will call (asynchronouslly)the OnResponse/OnErrorResponse method in AccessController
         call.enqueue(callBack);

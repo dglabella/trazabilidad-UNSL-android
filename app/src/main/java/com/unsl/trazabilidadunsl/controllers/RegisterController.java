@@ -1,49 +1,40 @@
 package com.unsl.trazabilidadunsl.controllers;
 
-import com.unsl.trazabilidadunsl.models.Acceso;
-import com.unsl.trazabilidadunsl.services.AccessService;
-import com.unsl.trazabilidadunsl.views.AccessView;
+import com.unsl.trazabilidadunsl.models.Registro;
+import com.unsl.trazabilidadunsl.services.RegisterService;
 import com.unsl.trazabilidadunsl.views.ErrorView;
-
+import com.unsl.trazabilidadunsl.views.RegisterView;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AccessController implements Callback<List<Acceso>>
+public class RegisterController implements Callback<Registro>
 {
-    private AccessView accessView;
+    private RegisterView registerView;
     private ErrorView errorView;
 
-    public AccessController(AccessView accessView, ErrorView errorView)
+    public RegisterController(RegisterView registerView, ErrorView errorView)
     {
-        this.accessView = accessView;
+        this.registerView = registerView;
         this.errorView = errorView;
     }
 
-    public void getAccesses()
+    public void createRegister(Registro register)
     {
-        AccessService.setCallBack(this);
-        AccessService.getAll();
+        RegisterService.setCallBack(this);
+        RegisterService.postRegister(register);
     }
 
     @Override
-    public void onResponse(Call<List<Acceso>> call, Response<List<Acceso>> response)
+    public void onResponse(Call<Registro> call, Response<Registro> response)
     {
-        if(response.isSuccessful())
-        {
-            this.accessView.manageAccessObtained(response.body());
-        }
-        else
-        {
-            this.errorView.anotherResponse(response.code());
-        }
+
     }
 
     @Override
-    public void onFailure(Call<List<Acceso>> call, Throwable t)
+    public void onFailure(Call<Registro> call, Throwable t)
     {
         String message;
         if (t instanceof SocketTimeoutException)

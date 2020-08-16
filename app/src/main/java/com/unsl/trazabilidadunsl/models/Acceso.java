@@ -35,4 +35,7 @@ public class Acceso
     {
         this.estado = estado;
     }
+
+    @Override
+    public String toString() { return this.getDescripcion(); }
 }

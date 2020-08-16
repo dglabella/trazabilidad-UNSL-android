@@ -1,34 +1,38 @@
 package com.unsl.trazabilidadunsl.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.unsl.trazabilidadunsl.R;
 import com.unsl.trazabilidadunsl.controllers.AccessController;
+import com.unsl.trazabilidadunsl.controllers.RegisterController;
 import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.views.AccessView;
-
-import java.util.ArrayList;
+import com.unsl.trazabilidadunsl.views.ErrorView;
+import com.unsl.trazabilidadunsl.views.RegisterView;
 import java.util.Iterator;
 import java.util.List;
+import org.jasypt.util.text.StrongTextEncryptor;
 
-public class MainActivity extends AppCompatActivity implements AccessView
+public class MainActivity extends AppCompatActivity implements AccessView, RegisterView, ErrorView
 {
     public static String API_HOSTNAME = "http://104.198.43.227:8080/";
 
     private TextView selectedAccess;
     private static AccessController accessController;
+    private static RegisterController registerController;
     private ListView accessList;
     private Acceso access;
+    private StrongTextEncryptor encryptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,23 +40,27 @@ public class MainActivity extends AppCompatActivity implements AccessView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MainActivity.accessController = new AccessController(this);
+        MainActivity.accessController = new AccessController(this, this);
+        MainActivity.registerController = new RegisterController(this, this);
+
+        this.encryptor = new StrongTextEncryptor();
+        this.encryptor.setPassword("159753zseqsc");
 
         this.selectedAccess = findViewById(R.id.selectedAccess);
 
-        Button iniciar = findViewById(R.id.iniciar);
+        final Button iniciar = findViewById(R.id.iniciar);
         iniciar.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                //Intent para scanner
-                Intent intent = new Intent(getApplicationContext(), ScanActivity.class);
-                intent.putExtra("accessId", access.getId());
-                startActivity(intent);
+                IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+                intentIntegrator.setOrientationLocked(false);
+
+                intentIntegrator.initiateScan();
             }
         });
-
+        iniciar.setEnabled(false);
         this.accessList = findViewById(R.id.accessList);
         this.accessList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -60,11 +68,31 @@ public class MainActivity extends AppCompatActivity implements AccessView
             {
                 selectedAccess.setText(accessList.getItemAtPosition(i).toString());
                 access = (Acceso) accessList.getItemAtPosition(i);
+                iniciar.setEnabled(true);
             }
         });
 
         //search for access online
-        MainActivity.accessController.getAccess();
+        MainActivity.accessController.getAccesses();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result!=null && result.getContents()!=null)
+        {
+            //Log.d("SCAN RESULT -------", result.getContents() );
+            //Hacer algo con el resultado
+            String decryptedData = encryptor.decrypt(result.getContents());
+            String [] splitedData = decryptedData.split("-");
+            personaController.iniciarRegistro(Integer.parseInt(splitedData[0]));
+        }
+        else
+        {
+            //Log.d("ERROR ------","cannot scan");
+            //El resultado no llego
+        }
     }
 
     @Override
@@ -77,10 +105,8 @@ public class MainActivity extends AppCompatActivity implements AccessView
         int i = 0;
         while (accessIterator.hasNext())
         {
-            //a = accessIterator.next();
             accessDescriptions[i] = accessIterator.next();
-            //accessDescriptions[i] = a.getDescripcion();
-            Log.d("MESSAGE ------------------>", accessDescriptions[i].getDescripcion());
+            //Log.d("MESSAGE ----------- ", accessDescriptions[i].getDescripcion());
             i++;
         }
 
@@ -88,14 +114,21 @@ public class MainActivity extends AppCompatActivity implements AccessView
         accessList.setAdapter(adapter);
     }
 
+
     @Override
-    public void error(String message)
+    public void anotherResponse(int code)
     {
 
     }
 
     @Override
-    public void anotherResponse(int code)
+    public void registerDone()
+    {
+
+    }
+
+    @Override
+    public void error(String message)
     {
 
     }

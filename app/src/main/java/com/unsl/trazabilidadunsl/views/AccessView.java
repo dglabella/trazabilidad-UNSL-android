@@ -7,8 +7,4 @@ import java.util.List;
 public interface AccessView
 {
     void manageAccessObtained(List<Acceso> access);
-
-    void error(String message);
-
-    void anotherResponse(int code);
 }
