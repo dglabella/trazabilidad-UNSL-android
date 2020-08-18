@@ -1,5 +1,6 @@
 package com.unsl.trazabilidadunsl.controllers;
 
+import com.unsl.trazabilidadunsl.activities.MainActivity;
 import com.unsl.trazabilidadunsl.models.Registro;
 import com.unsl.trazabilidadunsl.services.RegisterService;
 import com.unsl.trazabilidadunsl.views.ErrorView;
@@ -30,16 +31,27 @@ public class RegisterController implements Callback<Registro>
         return RegisterController.registerController;
     }
 
-    public void createRegister(Registro register)
+    public void createRegister(Integer personId)
     {
         RegisterService.setCallBack(this);
+        Registro register = new Registro();
+        register.setFkAcceso(MainActivity.getSelectedAccess().getId());
+        register.setFkPersona(personId);
+        register.setEstado("ACTIVO");
         RegisterService.postRegister(register);
     }
 
     @Override
     public void onResponse(Call<Registro> call, Response<Registro> response)
     {
-
+        if(response.isSuccessful())
+        {
+            this.registerView.registerDone(response.body());
+        }
+        else
+        {
+            this.errorView.anotherResponse(response.code());
+        }
     }
 
     @Override

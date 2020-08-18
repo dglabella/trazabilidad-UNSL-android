@@ -15,25 +15,28 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.unsl.trazabilidadunsl.R;
 import com.unsl.trazabilidadunsl.controllers.AccessController;
-import com.unsl.trazabilidadunsl.controllers.PersonController;
+import com.unsl.trazabilidadunsl.controllers.RegisterController;
 import com.unsl.trazabilidadunsl.models.Acceso;
+import com.unsl.trazabilidadunsl.models.Registro;
 import com.unsl.trazabilidadunsl.views.AccessView;
 import com.unsl.trazabilidadunsl.views.ErrorView;
-import com.unsl.trazabilidadunsl.views.PersonView;
+import com.unsl.trazabilidadunsl.views.RegisterView;
 import java.util.Iterator;
 import java.util.List;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;
 
-public class MainActivity extends AppCompatActivity implements AccessView, PersonView, ErrorView
+public class MainActivity extends AppCompatActivity implements AccessView, RegisterView, ErrorView
 {
     public static String API_HOSTNAME = "http://104.198.43.227:8080/";
 
     private TextView selectedAccess;
     private static AccessController accessController;
-    private static PersonController personController;
+    private static RegisterController registerController;
     private ListView accessList;
-    private Acceso access;
+    private static Acceso access;
     private StrongTextEncryptor encryptor;
+    private StandardPBEStringEncryptor encryptor2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,10 +45,13 @@ public class MainActivity extends AppCompatActivity implements AccessView, Perso
         setContentView(R.layout.activity_main);
 
         MainActivity.accessController = AccessController.getInstance(this, this);
-        MainActivity.personController = PersonController.getInstance(this, this);
+        MainActivity.registerController = RegisterController.getInstance(this, this);
 
         this.encryptor = new StrongTextEncryptor();
         this.encryptor.setPassword("159753zseqsc");
+
+        this.encryptor2 = new StandardPBEStringEncryptor();
+        this.encryptor2.setPassword("159753zseqsc");
 
         this.selectedAccess = findViewById(R.id.selectedAccess);
 
@@ -55,10 +61,18 @@ public class MainActivity extends AppCompatActivity implements AccessView, Perso
             @Override
             public void onClick(View view)
             {
-                IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
-                intentIntegrator.setOrientationLocked(false);
-
-                intentIntegrator.initiateScan();
+                if(access != null)
+                {
+                    IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+                    intentIntegrator.setOrientationLocked(false);
+                    intentIntegrator.setBeepEnabled(true);
+                    intentIntegrator.setOrientationLocked(false);
+                    intentIntegrator.initiateScan();
+                }
+                else
+                {
+                    selectedAccess.setText("PORFAVOR SELECCIONE UN ACCESO");
+                }
             }
         });
         iniciar.setEnabled(false);
@@ -75,8 +89,17 @@ public class MainActivity extends AppCompatActivity implements AccessView, Perso
 
         //search for access online
         MainActivity.accessController.getAccesses();
+
         //Log.d("---", "--------------------------------------------------------------------------------------------------");
-        //personController.initRegister(45);
+
+        String encryptedData = this.encryptor2.encrypt("17-35069255-Danilo-Labella");
+        System.out.println("DATOS ENC ------------------- "+encryptedData);
+        System.out.println("DATOS DEC ------------------- "+this.encryptor2.decrypt(encryptedData));
+
+        //swo0jB5xl7+RetLDsNX2Jpjp+iuiC9CmEGMyr1FfZf8sDLoYaKk2gg==
+        //String decryptedData = encryptor2.decrypt("swo0jB5xl7+RetLDsNX2Jpjp+iuiC9CmEGMyr1FfZf8sDLoYaKk2gg==");
+        //String [] splitedData = decryptedData.split("-");
+        //Log.d("ID ----------- ", splitedData[0]+" "+splitedData[1]+" "+splitedData[2]);
     }
 
     @Override
@@ -85,11 +108,11 @@ public class MainActivity extends AppCompatActivity implements AccessView, Perso
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result!=null && result.getContents()!=null)
         {
-            //Log.d("SCAN RESULT -------", result.getContents() );
+            Log.d("SCAN RESULT -------", result.getContents());
             //Hacer algo con el resultado
-            String decryptedData = encryptor.decrypt(result.getContents());
-            String [] splitedData = decryptedData.split("-");
-            Log.d("ID ----------- ", splitedData[0]);
+            //String decryptedData = encryptor.decrypt(result.getContents());
+            //String [] splitedData = decryptedData.split("-");
+            //Log.d("ID ----------- ", splitedData[0]);
             //personController.initRegister(Integer.parseInt(splitedData[0]));
             //personController.initRegister(42);
         }
@@ -98,6 +121,11 @@ public class MainActivity extends AppCompatActivity implements AccessView, Perso
             Log.d("ERROR ------","cannot scan");
             //El resultado no llego
         }
+    }
+
+    public static Acceso getSelectedAccess()
+    {
+        return MainActivity.access;
     }
 
     @Override
@@ -119,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements AccessView, Perso
         accessList.setAdapter(adapter);
     }
 
-
     @Override
     public void anotherResponse(int code)
     {
@@ -127,9 +154,9 @@ public class MainActivity extends AppCompatActivity implements AccessView, Perso
     }
 
     @Override
-    public void registerDone()
+    public void registerDone(Registro register)
     {
-
+        Log.d("MESSAGE ------- ","REGISTRO REALIZADO");
     }
 
     @Override
