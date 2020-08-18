@@ -4,7 +4,6 @@ import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.services.AccessService;
 import com.unsl.trazabilidadunsl.views.AccessView;
 import com.unsl.trazabilidadunsl.views.ErrorView;
-
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.List;
@@ -14,13 +13,22 @@ import retrofit2.Response;
 
 public class AccessController implements Callback<List<Acceso>>
 {
+    private static AccessController accessController;
+
     private AccessView accessView;
     private ErrorView errorView;
 
-    public AccessController(AccessView accessView, ErrorView errorView)
+    private AccessController(AccessView accessView, ErrorView errorView)
     {
         this.accessView = accessView;
         this.errorView = errorView;
+    }
+
+    public static AccessController getInstance(AccessView accessView, ErrorView errorView)
+    {
+        if(AccessController.accessController == null)
+            AccessController.accessController = new AccessController(accessView, errorView);
+        return AccessController.accessController;
     }
 
     public void getAccesses()

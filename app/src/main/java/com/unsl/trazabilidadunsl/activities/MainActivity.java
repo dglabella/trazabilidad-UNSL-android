@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,22 +15,22 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.unsl.trazabilidadunsl.R;
 import com.unsl.trazabilidadunsl.controllers.AccessController;
-import com.unsl.trazabilidadunsl.controllers.RegisterController;
+import com.unsl.trazabilidadunsl.controllers.PersonController;
 import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.views.AccessView;
 import com.unsl.trazabilidadunsl.views.ErrorView;
-import com.unsl.trazabilidadunsl.views.RegisterView;
+import com.unsl.trazabilidadunsl.views.PersonView;
 import java.util.Iterator;
 import java.util.List;
 import org.jasypt.util.text.StrongTextEncryptor;
 
-public class MainActivity extends AppCompatActivity implements AccessView, RegisterView, ErrorView
+public class MainActivity extends AppCompatActivity implements AccessView, PersonView, ErrorView
 {
     public static String API_HOSTNAME = "http://104.198.43.227:8080/";
 
     private TextView selectedAccess;
     private static AccessController accessController;
-    private static RegisterController registerController;
+    private static PersonController personController;
     private ListView accessList;
     private Acceso access;
     private StrongTextEncryptor encryptor;
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements AccessView, Regis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MainActivity.accessController = new AccessController(this, this);
-        MainActivity.registerController = new RegisterController(this, this);
+        MainActivity.accessController = AccessController.getInstance(this, this);
+        MainActivity.personController = PersonController.getInstance(this, this);
 
         this.encryptor = new StrongTextEncryptor();
         this.encryptor.setPassword("159753zseqsc");
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements AccessView, Regis
 
         //search for access online
         MainActivity.accessController.getAccesses();
+        //Log.d("---", "--------------------------------------------------------------------------------------------------");
+        //personController.initRegister(45);
     }
 
     @Override
@@ -86,11 +89,13 @@ public class MainActivity extends AppCompatActivity implements AccessView, Regis
             //Hacer algo con el resultado
             String decryptedData = encryptor.decrypt(result.getContents());
             String [] splitedData = decryptedData.split("-");
-            personaController.iniciarRegistro(Integer.parseInt(splitedData[0]));
+            Log.d("ID ----------- ", splitedData[0]);
+            //personController.initRegister(Integer.parseInt(splitedData[0]));
+            //personController.initRegister(42);
         }
         else
         {
-            //Log.d("ERROR ------","cannot scan");
+            Log.d("ERROR ------","cannot scan");
             //El resultado no llego
         }
     }
@@ -130,6 +135,6 @@ public class MainActivity extends AppCompatActivity implements AccessView, Regis
     @Override
     public void error(String message)
     {
-
+        Log.d("A VER ----------- ", message);
     }
 }

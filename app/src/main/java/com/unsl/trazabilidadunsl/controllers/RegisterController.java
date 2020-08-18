@@ -12,6 +12,8 @@ import retrofit2.Response;
 
 public class RegisterController implements Callback<Registro>
 {
+    private static RegisterController registerController;
+
     private RegisterView registerView;
     private ErrorView errorView;
 
@@ -19,6 +21,13 @@ public class RegisterController implements Callback<Registro>
     {
         this.registerView = registerView;
         this.errorView = errorView;
+    }
+
+    public static RegisterController getInstance(RegisterView registerView, ErrorView errorView)
+    {
+        if(RegisterController.registerController == null)
+            RegisterController.registerController = new RegisterController(registerView, errorView);
+        return RegisterController.registerController;
     }
 
     public void createRegister(Registro register)

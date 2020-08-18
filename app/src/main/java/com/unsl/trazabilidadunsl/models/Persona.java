@@ -19,7 +19,6 @@ public class Persona {
     private Integer fk_dependencia;
     private Blob foto;
 
-
     private Dependencia dependencia;
 
     public Dependencia getDependencia() {
