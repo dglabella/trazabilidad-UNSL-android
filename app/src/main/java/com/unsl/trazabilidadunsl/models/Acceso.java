@@ -37,5 +37,7 @@ public class Acceso
     }
 
     @Override
-    public String toString() { return this.getDescripcion(); }
+    public String toString() {
+        return this.getId()+"-"+this.getDescripcion();
+    }
 }

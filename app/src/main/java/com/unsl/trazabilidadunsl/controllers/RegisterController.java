@@ -1,6 +1,6 @@
 package com.unsl.trazabilidadunsl.controllers;
 
-import com.unsl.trazabilidadunsl.activities.MainActivity;
+import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
 import com.unsl.trazabilidadunsl.models.Registro;
 import com.unsl.trazabilidadunsl.services.RegisterService;
 import com.unsl.trazabilidadunsl.views.ErrorView;
@@ -35,7 +35,7 @@ public class RegisterController implements Callback<Registro>
     {
         RegisterService.setCallBack(this);
         Registro register = new Registro();
-        register.setFkAcceso(MainActivity.getSelectedAccess().getId());
+        register.setFkAcceso(accessSelectionActivity.getSelectedAccess().getId());
         register.setFkPersona(personId);
         register.setEstado("ACTIVO");
         RegisterService.postRegister(register);

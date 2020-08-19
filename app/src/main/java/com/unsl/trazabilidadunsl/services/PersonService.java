@@ -1,10 +1,9 @@
 package com.unsl.trazabilidadunsl.services;
 
-import com.unsl.trazabilidadunsl.activities.MainActivity;
+import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
 import com.unsl.trazabilidadunsl.interfaces.JsonPlaceHolderAPI;
-import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.models.Persona;
-import java.util.List;
+
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -34,7 +33,7 @@ public class PersonService
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MainActivity.API_HOSTNAME)
+                .baseUrl(accessSelectionActivity.API_HOSTNAME)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

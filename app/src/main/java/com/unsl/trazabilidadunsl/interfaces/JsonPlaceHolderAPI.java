@@ -3,6 +3,7 @@ package com.unsl.trazabilidadunsl.interfaces;
 import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.models.Persona;
 import com.unsl.trazabilidadunsl.models.Registro;
+import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 
 import java.util.List;
 import retrofit2.Call;
@@ -22,4 +23,6 @@ public interface JsonPlaceHolderAPI
     @POST("registros")
     Call<Registro> postRegister(@Body Registro register);
 
+    //@POST("registros/cellPhone")
+    //Call<RegistroCellPhone> postRegister(@Body RegistroCellPhone registerCellPhone);
 }

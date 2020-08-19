@@ -1,6 +1,6 @@
 package com.unsl.trazabilidadunsl.services;
 
-import com.unsl.trazabilidadunsl.activities.MainActivity;
+import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
 import com.unsl.trazabilidadunsl.interfaces.JsonPlaceHolderAPI;
 import com.unsl.trazabilidadunsl.models.Acceso;
 import java.util.List;
@@ -15,7 +15,7 @@ public class AccessService
 {
     public static String RESOURCE = "accesos";
     private final static int REQUEST_CONNECT_TIMEOUT_TOLERANCE = 20;
-    private final static int REQUEST_READ_TIMEOUT_TOLERANCE = 2;
+    private final static int REQUEST_READ_TIMEOUT_TOLERANCE = 3;
     private final static int REQUEST_WRITE_TIMEOUT_TOLERANCE = 5;
     private static Callback<List<Acceso>> callBack;
 
@@ -33,7 +33,7 @@ public class AccessService
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MainActivity.API_HOSTNAME)
+                .baseUrl(accessSelectionActivity.API_HOSTNAME)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
