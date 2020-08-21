@@ -78,12 +78,7 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
                 }
             }
         });
-    }
 
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
         try
         {
             accessSelectionActivity.access = this.loadPreConfigAccess();
@@ -96,14 +91,21 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
         {
             e.printStackTrace();
         }
+        //search for access online
+        accessSelectionActivity.accessController.getAccesses();
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        //search for access online
-        accessSelectionActivity.accessController.getAccesses();
     }
 
     private Acceso loadPreConfigAccess() throws IOException
