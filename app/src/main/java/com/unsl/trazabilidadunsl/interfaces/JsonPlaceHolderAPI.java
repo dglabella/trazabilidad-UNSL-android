@@ -1,8 +1,8 @@
 package com.unsl.trazabilidadunsl.interfaces;
 
 import com.unsl.trazabilidadunsl.models.Acceso;
+import com.unsl.trazabilidadunsl.models.Estadisticas;
 import com.unsl.trazabilidadunsl.models.Persona;
-import com.unsl.trazabilidadunsl.models.Registro;
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 
 import java.util.List;
@@ -11,6 +11,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface JsonPlaceHolderAPI
 {
@@ -20,9 +21,12 @@ public interface JsonPlaceHolderAPI
     @GET("personas/{id}")
     Call<Persona> getPerson(@Path("id") Integer id);
 
-    @POST("registros")
-    Call<Registro> postRegister(@Body Registro register);
+    //@POST("registros")
+    //Call<Registro> postRegister(@Body Registro Registro);
 
-    //@POST("registros/cellPhone")
-    //Call<RegistroCellPhone> postRegister(@Body RegistroCellPhone registerCellPhone);
+    @POST("registros/cellPhone")
+    Call<RegistroCellPhone> postRegister(@Body RegistroCellPhone registerCellPhone);
+
+    @GET("registros/statistics")
+    Call<Estadisticas> getStatistics(@Query("accesoId") Integer accessId);
 }

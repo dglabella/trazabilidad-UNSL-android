@@ -2,7 +2,7 @@ package com.unsl.trazabilidadunsl.services;
 
 import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
 import com.unsl.trazabilidadunsl.interfaces.JsonPlaceHolderAPI;
-import com.unsl.trazabilidadunsl.models.Registro;
+import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -16,14 +16,14 @@ public class RegisterService
     private final static int REQUEST_CONNECT_TIMEOUT_TOLERANCE = 20;
     private final static int REQUEST_READ_TIMEOUT_TOLERANCE = 2;
     private final static int REQUEST_WRITE_TIMEOUT_TOLERANCE = 5;
-    private static Callback<Registro> callBack;
+    private static Callback<RegistroCellPhone> callBack;
 
-    public static void setCallBack(Callback<Registro> callBack)
+    public static void setCallBack(Callback<RegistroCellPhone> callBack)
     {
         RegisterService.callBack = callBack;
     }
 
-    public static void postRegister(Registro register)
+    public static void postRegister(RegistroCellPhone registroCellPhone)
     {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(REQUEST_CONNECT_TIMEOUT_TOLERANCE, TimeUnit.SECONDS)
@@ -38,9 +38,9 @@ public class RegisterService
                 .build();
 
         JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
-        Call<Registro> call = jsonPlaceHolderAPI.postRegister(register);
+        Call<RegistroCellPhone> call = jsonPlaceHolderAPI.postRegister(registroCellPhone);
 
-        //This will call (asynchronouslly)the OnResponse/OnErrorResponse method in AccessController
+        //This will call (asynchronouslly)the OnResponse/OnErrorResponse method in Controller
         call.enqueue(callBack);
     }
 }

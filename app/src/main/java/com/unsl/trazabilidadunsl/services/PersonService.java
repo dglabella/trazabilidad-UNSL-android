@@ -41,7 +41,7 @@ public class PersonService
         JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
         Call<Persona> call = jsonPlaceHolderAPI.getPerson(personId);
 
-        //This will call (asynchronouslly)the OnResponse/OnErrorResponse method in AccessController
+        //This will call (asynchronouslly)the OnResponse/OnErrorResponse method in Controller
         call.enqueue(callBack);
     }
 }

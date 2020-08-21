@@ -2,29 +2,30 @@ package com.unsl.trazabilidadunsl.services;
 
 import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
 import com.unsl.trazabilidadunsl.interfaces.JsonPlaceHolderAPI;
-import com.unsl.trazabilidadunsl.models.Acceso;
-import java.util.List;
+import com.unsl.trazabilidadunsl.models.Estadisticas;
+
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AccessService
+public class StatisticsServices
 {
-    public static String RESOURCE = "accesos";
+    public static String RESOURCE = "registros/statistics";
     private final static int REQUEST_CONNECT_TIMEOUT_TOLERANCE = 20;
-    private final static int REQUEST_READ_TIMEOUT_TOLERANCE = 3;
+    private final static int REQUEST_READ_TIMEOUT_TOLERANCE = 2;
     private final static int REQUEST_WRITE_TIMEOUT_TOLERANCE = 5;
-    private static Callback<List<Acceso>> callBack;
+    private static Callback<Estadisticas> callBack;
 
-    public static void setCallBack(Callback<List<Acceso>> callBack)
+    public static void setCallBack(Callback<Estadisticas> callBack)
     {
-        AccessService.callBack = callBack;
+        StatisticsServices.callBack = callBack;
     }
 
-    public static void getAll()
+    public static void getStatistics(Integer accessId)
     {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(REQUEST_CONNECT_TIMEOUT_TOLERANCE, TimeUnit.SECONDS)
@@ -39,7 +40,7 @@ public class AccessService
                 .build();
 
         JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
-        Call<List<Acceso>> call = jsonPlaceHolderAPI.getAccesses();
+        Call<Estadisticas> call = jsonPlaceHolderAPI.getStatistics(accessId);
 
         //This will call (asynchronouslly)the OnResponse/OnErrorResponse method in Controller
         call.enqueue(callBack);

@@ -7,34 +7,33 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.unsl.trazabilidadunsl.R;
-import com.unsl.trazabilidadunsl.controllers.AccessController;
 import com.unsl.trazabilidadunsl.controllers.RegisterController;
 import com.unsl.trazabilidadunsl.models.Acceso;
-import com.unsl.trazabilidadunsl.models.Persona;
-import com.unsl.trazabilidadunsl.models.Registro;
+import com.unsl.trazabilidadunsl.models.Estadisticas;
+import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 import com.unsl.trazabilidadunsl.views.ErrorView;
 import com.unsl.trazabilidadunsl.views.RegisterView;
-import org.jasypt.util.text.StrongTextEncryptor;
+import com.unsl.trazabilidadunsl.views.StatisticsView;
 import java.util.Objects;
+//import org.jasypt.util.text.StrongTextEncryptor;
 
-public class ReadyToScan extends AppCompatActivity implements RegisterView, ErrorView
+public class ReadyToScan extends AppCompatActivity implements RegisterView, StatisticsView, ErrorView
 {
     private TextView selectedAccess;
+    private TextView stats;
+    private TextView total;
     private Acceso access;
-    private static AccessController accessController;
     private static RegisterController registerController;
-    private ListView accessList;
-    private StrongTextEncryptor encryptor;
-    private Persona personScanned;
+    //private StrongTextEncryptor encryptor;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ready_to_scan);
 
@@ -47,11 +46,10 @@ public class ReadyToScan extends AppCompatActivity implements RegisterView, Erro
         this.selectedAccess = findViewById(R.id.accessSelected);
         this.selectedAccess.setText(this.access.getDescripcion());
 
-        this.encryptor = new StrongTextEncryptor();
-        this.encryptor.setPassword("159753zseqsc");
+        this.stats = findViewById(R.id.stats);
+        this.total = findViewById(R.id.total);
 
-        //this.encryptor2 = new StandardPBEStringEncryptor();
-        //this.encryptor2.setPassword("159753zseqsc");
+        ReadyToScan.registerController =  RegisterController.getInstance(this, this);
 
         final Button initScan = findViewById(R.id.initScan);
         initScan.setOnClickListener(new View.OnClickListener()
@@ -73,6 +71,18 @@ public class ReadyToScan extends AppCompatActivity implements RegisterView, Erro
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
     }
 
     @Override
@@ -99,6 +109,11 @@ public class ReadyToScan extends AppCompatActivity implements RegisterView, Erro
             this.personScanned.setApellido("Person");
             this.registerController.createRegister(personScanned.getId());
             */
+            RegistroCellPhone rcp = new RegistroCellPhone();
+            rcp.setIdAcceso((long)this.access.getId());
+            rcp.setEncryptedData(result.getContents());
+            ReadyToScan.registerController.createRegister(rcp);
+
             Toast.makeText(ReadyToScan.this, result.getContents(), Toast.LENGTH_LONG).show();
         }
         else
@@ -109,28 +124,30 @@ public class ReadyToScan extends AppCompatActivity implements RegisterView, Erro
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        //Toast.makeText(ReadyToScan.this,"He Resumido", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void anotherResponse(int code)
     {
         Toast.makeText(ReadyToScan.this, "UNSPECTED RESPONSE CODE: "+code, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void registerDone(Registro register)
+    public void registerDone(RegistroCellPhone registroCellPhone)
     {
-        Toast.makeText(ReadyToScan.this, "Registro realizado: "+
-                this.personScanned.getDni()+" "+this.personScanned.getNombre()+" "+
-                this.personScanned.getApellido(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(ReadyToScan.this, "Registro realizado: "+
+        //        this.personScanned.getDni()+" "+this.personScanned.getNombre()+" "+
+        //       this.personScanned.getApellido(), Toast.LENGTH_LONG).show();
+        Toast.makeText(ReadyToScan.this, "Registro realizado", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void error(String message)
     {
         Toast.makeText(ReadyToScan.this, "ERROR: "+message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void reportStatistics(Estadisticas statistics)
+    {
+        this.stats.setText(this.stats.getText()+statistics.getEnTransito().toString());
+        this.total.setText(this.total.getText()+statistics.getTotales().toString());
     }
 }

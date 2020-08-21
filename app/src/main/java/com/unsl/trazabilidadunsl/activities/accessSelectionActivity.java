@@ -3,7 +3,6 @@ package com.unsl.trazabilidadunsl.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,13 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.unsl.trazabilidadunsl.R;
 import com.unsl.trazabilidadunsl.controllers.AccessController;
-import com.unsl.trazabilidadunsl.controllers.RegisterController;
-import com.unsl.trazabilidadunsl.models.Acceso;
-import com.unsl.trazabilidadunsl.models.Persona;
-import com.unsl.trazabilidadunsl.models.Registro;
 import com.unsl.trazabilidadunsl.views.AccessView;
+import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.views.ErrorView;
-import com.unsl.trazabilidadunsl.views.RegisterView;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,19 +22,17 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.jasypt.util.text.StrongTextEncryptor;
 
 public class accessSelectionActivity extends AppCompatActivity implements AccessView, ErrorView
 {
     public static String API_HOSTNAME = "http://104.198.43.227:8080/";
+    //public static String API_HOSTNAME = "http://190.114.77.252:8080/"; //Cristian
 
     private final String PRECONFIG_ACCESS_FILE_NAME = "preConfigAccess.txt";
     private TextView selectedAccess;
     private static AccessController accessController;
     private ListView accessList;
     private static Acceso access;
-
-    //private StrongTextEncryptor encryptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -85,7 +78,12 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
                 }
             }
         });
+    }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
         try
         {
             accessSelectionActivity.access = this.loadPreConfigAccess();
@@ -97,12 +95,15 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
         catch (IOException e)
         {
             e.printStackTrace();
-            //search for access online
         }
-        finally
-        {
-            accessSelectionActivity.accessController.getAccesses();
-        }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        //search for access online
+        accessSelectionActivity.accessController.getAccesses();
     }
 
     private Acceso loadPreConfigAccess() throws IOException
@@ -126,7 +127,8 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
         return ret;
     }
 
-    private void savePreConfigAccess(Acceso access) throws IOException {
+    private void savePreConfigAccess(Acceso access) throws IOException
+    {
         String data = access.toString();
         FileOutputStream fOut = openFileOutput(PRECONFIG_ACCESS_FILE_NAME, MODE_PRIVATE);
         OutputStreamWriter osw = new OutputStreamWriter(fOut);
@@ -154,7 +156,6 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
             accessDescriptions[i] = accessIterator.next();
             i++;
         }
-
         ArrayAdapter<Acceso> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, accessDescriptions);
         accessList.setAdapter(adapter);
     }

@@ -53,16 +53,16 @@ public class AccessController implements Callback<List<Acceso>>
     @Override
     public void onFailure(Call<List<Acceso>> call, Throwable t)
     {
-        String message;
+        String message = "Access -> ";
         if (t instanceof SocketTimeoutException)
         {
             // "Connection Timeout";
-            message = "Connection Timeout";
+            message += "Connection Timeout";
         }
         else if (t instanceof IOException)
         {
             // "Timeout";
-            message = "Timeout";
+            message += "Timeout";
         }
         else
         {
@@ -70,13 +70,13 @@ public class AccessController implements Callback<List<Acceso>>
             if(call.isCanceled())
             {
                 System.out.println("Call was cancelled forcefully");
-                message = "Call was cancelled forcefully";
+                message += "Call was cancelled forcefully";
             }
             else
             {
                 //Generic error handling
-                System.out.println("Network Error :: " + t.getLocalizedMessage());
-                message = t.getLocalizedMessage();
+                System.out.println("Network Error : " + t.getLocalizedMessage());
+                message += t.getLocalizedMessage();
             }
         }
         this.errorView.error(message);

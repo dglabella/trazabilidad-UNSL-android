@@ -1,7 +1,6 @@
 package com.unsl.trazabilidadunsl.controllers;
 
-import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
-import com.unsl.trazabilidadunsl.models.Registro;
+import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 import com.unsl.trazabilidadunsl.services.RegisterService;
 import com.unsl.trazabilidadunsl.views.ErrorView;
 import com.unsl.trazabilidadunsl.views.RegisterView;
@@ -11,14 +10,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterController implements Callback<Registro>
+public class RegisterController implements Callback<RegistroCellPhone>
 {
     private static RegisterController registerController;
 
     private RegisterView registerView;
     private ErrorView errorView;
 
-    public RegisterController(RegisterView registerView, ErrorView errorView)
+    private RegisterController(RegisterView registerView, ErrorView errorView)
     {
         this.registerView = registerView;
         this.errorView = errorView;
@@ -31,18 +30,14 @@ public class RegisterController implements Callback<Registro>
         return RegisterController.registerController;
     }
 
-    public void createRegister(Integer personId)
+    public void createRegister(RegistroCellPhone registroCellPhone)
     {
         RegisterService.setCallBack(this);
-        Registro register = new Registro();
-        register.setFkAcceso(accessSelectionActivity.getSelectedAccess().getId());
-        register.setFkPersona(personId);
-        register.setEstado("ACTIVO");
-        RegisterService.postRegister(register);
+        RegisterService.postRegister(registroCellPhone);
     }
 
     @Override
-    public void onResponse(Call<Registro> call, Response<Registro> response)
+    public void onResponse(Call<RegistroCellPhone> call, Response<RegistroCellPhone> response)
     {
         if(response.isSuccessful())
         {
@@ -55,18 +50,18 @@ public class RegisterController implements Callback<Registro>
     }
 
     @Override
-    public void onFailure(Call<Registro> call, Throwable t)
+    public void onFailure(Call<RegistroCellPhone> call, Throwable t)
     {
-        String message;
+        String message = "Register -> ";
         if (t instanceof SocketTimeoutException)
         {
             // "Connection Timeout";
-            message = "Connection Timeout";
+            message += "Connection Timeout";
         }
         else if (t instanceof IOException)
         {
             // "Timeout";
-            message = "Timeout";
+            message += "Timeout";
         }
         else
         {
@@ -74,13 +69,13 @@ public class RegisterController implements Callback<Registro>
             if(call.isCanceled())
             {
                 System.out.println("Call was cancelled forcefully");
-                message = "Call was cancelled forcefully";
+                message += "Call was cancelled forcefully";
             }
             else
             {
                 //Generic error handling
-                System.out.println("Network Error :: " + t.getLocalizedMessage());
-                message = t.getLocalizedMessage();
+                System.out.println("Network Error : " + t.getLocalizedMessage());
+                message += t.getLocalizedMessage();
             }
         }
         this.errorView.error(message);

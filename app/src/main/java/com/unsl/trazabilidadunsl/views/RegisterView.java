@@ -1,8 +1,8 @@
 package com.unsl.trazabilidadunsl.views;
 
-import com.unsl.trazabilidadunsl.models.Registro;
+import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 
 public interface RegisterView
 {
-    void registerDone(Registro register);
+    void registerDone(RegistroCellPhone registroCellPhone);
 }
