@@ -17,17 +17,28 @@ public class RegisterController implements Callback<RegistroCellPhone>
     private RegisterView registerView;
     private ErrorView errorView;
 
-    private RegisterController(RegisterView registerView, ErrorView errorView)
-    {
-        this.registerView = registerView;
-        this.errorView = errorView;
-    }
-
-    public static RegisterController getInstance(RegisterView registerView, ErrorView errorView)
+    public static RegisterController getInstance()
     {
         if(RegisterController.registerController == null)
-            RegisterController.registerController = new RegisterController(registerView, errorView);
+            RegisterController.registerController = new RegisterController();
+
         return RegisterController.registerController;
+    }
+
+    public RegisterView getRegisterView() {
+        return registerView;
+    }
+
+    public void setRegisterView(RegisterView registerView) {
+        this.registerView = registerView;
+    }
+
+    public ErrorView getErrorView() {
+        return errorView;
+    }
+
+    public void setErrorView(ErrorView errorView) {
+        this.errorView = errorView;
     }
 
     public void createRegister(RegistroCellPhone registroCellPhone)

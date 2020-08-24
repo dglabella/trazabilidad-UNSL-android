@@ -1,6 +1,7 @@
 package com.unsl.trazabilidadunsl.controllers;
 
 import com.unsl.trazabilidadunsl.models.Estadisticas;
+import com.unsl.trazabilidadunsl.services.StatisticsServices;
 import com.unsl.trazabilidadunsl.views.ErrorView;
 import com.unsl.trazabilidadunsl.views.StatisticsView;
 
@@ -18,23 +19,46 @@ public class StatisticsController implements Callback<Estadisticas>
     private StatisticsView statisticsView;
     private ErrorView errorView;
 
-    private StatisticsController(StatisticsView statisticsView, ErrorView errorView)
+    public static StatisticsController getInstance()
     {
+        if(StatisticsController.statisticsController == null)
+            StatisticsController.statisticsController = new StatisticsController();
+        return StatisticsController.statisticsController;
+    }
+
+    public StatisticsView getStatisticsView() {
+        return statisticsView;
+    }
+
+    public void setStatisticsView(StatisticsView statisticsView) {
         this.statisticsView = statisticsView;
+    }
+
+    public ErrorView getErrorView() {
+        return errorView;
+    }
+
+    public void setErrorView(ErrorView errorView) {
         this.errorView = errorView;
     }
 
-    public static StatisticsController getInstance(StatisticsView statisticsView, ErrorView errorView)
+    public void getStatistics(Integer accessId)
     {
-        if(StatisticsController.statisticsController == null)
-            StatisticsController.statisticsController = new StatisticsController(statisticsView, errorView);
-        return StatisticsController.statisticsController;
+        StatisticsServices.setCallBack(this);
+        StatisticsServices.getStatistics(accessId);
     }
 
     @Override
     public void onResponse(Call<Estadisticas> call, Response<Estadisticas> response)
     {
-        this.statisticsView.reportStatistics(response.body());
+        if(response.isSuccessful())
+        {
+            this.statisticsView.reportStatistics(response.body());
+        }
+        else
+        {
+            this.errorView.anotherResponse(response.code());
+        }
     }
 
     @Override

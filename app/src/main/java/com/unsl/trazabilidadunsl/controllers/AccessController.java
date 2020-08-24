@@ -18,17 +18,27 @@ public class AccessController implements Callback<List<Acceso>>
     private AccessView accessView;
     private ErrorView errorView;
 
-    private AccessController(AccessView accessView, ErrorView errorView)
-    {
-        this.accessView = accessView;
-        this.errorView = errorView;
-    }
-
-    public static AccessController getInstance(AccessView accessView, ErrorView errorView)
+    public static AccessController getInstance()
     {
         if(AccessController.accessController == null)
-            AccessController.accessController = new AccessController(accessView, errorView);
+            AccessController.accessController = new AccessController();
         return AccessController.accessController;
+    }
+
+    public AccessView getAccessView() {
+        return accessView;
+    }
+
+    public void setAccessView(AccessView accessView) {
+        this.accessView = accessView;
+    }
+
+    public ErrorView getErrorView() {
+        return errorView;
+    }
+
+    public void setErrorView(ErrorView errorView) {
+        this.errorView = errorView;
     }
 
     public void getAccesses()

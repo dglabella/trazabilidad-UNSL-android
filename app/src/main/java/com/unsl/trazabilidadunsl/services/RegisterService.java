@@ -1,6 +1,6 @@
 package com.unsl.trazabilidadunsl.services;
 
-import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
+import com.unsl.trazabilidadunsl.activities.AccessSelectionActivity;
 import com.unsl.trazabilidadunsl.interfaces.JsonPlaceHolderAPI;
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +32,7 @@ public class RegisterService
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(accessSelectionActivity.API_HOSTNAME)
+                .baseUrl(AccessSelectionActivity.API_HOSTNAME)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

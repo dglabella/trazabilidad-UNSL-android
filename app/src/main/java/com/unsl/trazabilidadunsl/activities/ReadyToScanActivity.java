@@ -13,6 +13,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.unsl.trazabilidadunsl.R;
 import com.unsl.trazabilidadunsl.controllers.RegisterController;
+import com.unsl.trazabilidadunsl.controllers.StatisticsController;
 import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.models.Estadisticas;
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
@@ -22,13 +23,16 @@ import com.unsl.trazabilidadunsl.views.StatisticsView;
 import java.util.Objects;
 //import org.jasypt.util.text.StrongTextEncryptor;
 
-public class ReadyToScan extends AppCompatActivity implements RegisterView, StatisticsView, ErrorView
+public class ReadyToScanActivity extends AppCompatActivity implements RegisterView, StatisticsView, ErrorView
 {
     private TextView selectedAccess;
     private TextView stats;
     private TextView total;
+    private Button initScan;
+
     private Acceso access;
     private static RegisterController registerController;
+    private static StatisticsController statisticsController;
     //private StrongTextEncryptor encryptor;
 
     @Override
@@ -49,25 +53,31 @@ public class ReadyToScan extends AppCompatActivity implements RegisterView, Stat
         this.stats = findViewById(R.id.stats);
         this.total = findViewById(R.id.total);
 
-        ReadyToScan.registerController =  RegisterController.getInstance(this, this);
+        ReadyToScanActivity.registerController =  RegisterController.getInstance();
+        ReadyToScanActivity.registerController.setRegisterView(this);
+        ReadyToScanActivity.registerController.setErrorView(this);
 
-        final Button initScan = findViewById(R.id.initScan);
+        ReadyToScanActivity.statisticsController = StatisticsController.getInstance();
+        ReadyToScanActivity.statisticsController.setStatisticsView(this);
+        ReadyToScanActivity.statisticsController.setErrorView(this);
+
+        initScan = findViewById(R.id.initScan);
         initScan.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if(access != null)
+                if(access != null && access.getId() != 99) //id=99 means error
                 {
-                    IntentIntegrator intentIntegrator = new IntentIntegrator(ReadyToScan.this);
+                    IntentIntegrator intentIntegrator = new IntentIntegrator(ReadyToScanActivity.this);
                     intentIntegrator.setOrientationLocked(false);
                     intentIntegrator.setBeepEnabled(true);
-                    intentIntegrator.setOrientationLocked(false);
+                    intentIntegrator.setOrientationLocked(true);
                     intentIntegrator.initiateScan();
                 }
                 else
                 {
-                    Toast.makeText(ReadyToScan.this, "No hay acceso seleccionado, vuelva atras.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ReadyToScanActivity.this, "No hay acceso seleccionado, vuelva atras.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -77,12 +87,47 @@ public class ReadyToScan extends AppCompatActivity implements RegisterView, Stat
     protected void onStart()
     {
         super.onStart();
+        if(access != null && access.getId() != 99)
+        {
+            this.initScan.setEnabled(true);
+            ReadyToScanActivity.statisticsController.getStatistics(this.access.getId());
+        }
+        else
+        {
+            this.initScan.setEnabled(false);
+            Toast.makeText(ReadyToScanActivity.this, "No hay acceso seleccionado, vuelva atras.", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        AccessSelectionActivity.setHasAccessPreSelected(false);
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
     }
 
     @Override
@@ -112,42 +157,42 @@ public class ReadyToScan extends AppCompatActivity implements RegisterView, Stat
             RegistroCellPhone rcp = new RegistroCellPhone();
             rcp.setIdAcceso((long)this.access.getId());
             rcp.setEncryptedData(result.getContents());
-            ReadyToScan.registerController.createRegister(rcp);
-
-            Toast.makeText(ReadyToScan.this, result.getContents(), Toast.LENGTH_LONG).show();
+            ReadyToScanActivity.registerController.createRegister(rcp);
+            //Toast.makeText(ReadyToScanActivity.this, result.getContents(), Toast.LENGTH_LONG).show();
         }
         else
         {
             Log.d("ERROR ------","cannot scan");
-            //El resultado no llego
+            Toast.makeText(ReadyToScanActivity.this, "ERROR, no scan result", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void anotherResponse(int code)
     {
-        Toast.makeText(ReadyToScan.this, "UNSPECTED RESPONSE CODE: "+code, Toast.LENGTH_LONG).show();
+        Toast.makeText(ReadyToScanActivity.this, "UNSPECTED RESPONSE CODE: "+code, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void registerDone(RegistroCellPhone registroCellPhone)
     {
-        //Toast.makeText(ReadyToScan.this, "Registro realizado: "+
+        //Toast.makeText(ReadyToScanActivity.this, "Registro realizado: "+
         //        this.personScanned.getDni()+" "+this.personScanned.getNombre()+" "+
         //       this.personScanned.getApellido(), Toast.LENGTH_LONG).show();
-        Toast.makeText(ReadyToScan.this, "Registro realizado", Toast.LENGTH_LONG).show();
+        Toast.makeText(ReadyToScanActivity.this, "Registro realizado", Toast.LENGTH_LONG).show();
+        ReadyToScanActivity.statisticsController.getStatistics(this.access.getId());
     }
 
     @Override
     public void error(String message)
     {
-        Toast.makeText(ReadyToScan.this, "ERROR: "+message, Toast.LENGTH_LONG).show();
+        Toast.makeText(ReadyToScanActivity.this, "ERROR: "+message, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void reportStatistics(Estadisticas statistics)
     {
-        this.stats.setText(this.stats.getText()+statistics.getEnTransito().toString());
-        this.total.setText(this.total.getText()+statistics.getTotales().toString());
+        this.stats.setText("Transito: "+statistics.getEnTransito().toString());
+        this.total.setText("Ingresos totales: "+statistics.getTotales().toString());
     }
 }

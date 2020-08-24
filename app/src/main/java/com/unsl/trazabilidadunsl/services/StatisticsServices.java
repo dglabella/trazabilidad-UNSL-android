@@ -1,6 +1,6 @@
 package com.unsl.trazabilidadunsl.services;
 
-import com.unsl.trazabilidadunsl.activities.accessSelectionActivity;
+import com.unsl.trazabilidadunsl.activities.AccessSelectionActivity;
 import com.unsl.trazabilidadunsl.interfaces.JsonPlaceHolderAPI;
 import com.unsl.trazabilidadunsl.models.Estadisticas;
 
@@ -16,7 +16,7 @@ public class StatisticsServices
 {
     public static String RESOURCE = "registros/statistics";
     private final static int REQUEST_CONNECT_TIMEOUT_TOLERANCE = 20;
-    private final static int REQUEST_READ_TIMEOUT_TOLERANCE = 2;
+    private final static int REQUEST_READ_TIMEOUT_TOLERANCE = 5;
     private final static int REQUEST_WRITE_TIMEOUT_TOLERANCE = 5;
     private static Callback<Estadisticas> callBack;
 
@@ -34,7 +34,7 @@ public class StatisticsServices
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(accessSelectionActivity.API_HOSTNAME)
+                .baseUrl(AccessSelectionActivity.API_HOSTNAME)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

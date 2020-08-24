@@ -23,16 +23,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class accessSelectionActivity extends AppCompatActivity implements AccessView, ErrorView
+public class AccessSelectionActivity extends AppCompatActivity implements AccessView, ErrorView
 {
     public static String API_HOSTNAME = "http://104.198.43.227:8080/";
     //public static String API_HOSTNAME = "http://190.114.77.252:8080/"; //Cristian
-
     private final String PRECONFIG_ACCESS_FILE_NAME = "preConfigAccess.txt";
-    private TextView selectedAccess;
     private static AccessController accessController;
-    private ListView accessList;
     private static Acceso access;
+    private static boolean hasAccessPreSelected = false;
+
+    private TextView selectedAccess;
+    private ListView accessList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,17 +41,9 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //this.encryptor = new StrongTextEncryptor();
-        //this.encryptor.setPassword("159753zseqsc");
-        //String encryptedData = this.encryptor.encrypt("17-35069255-Danilo-Labella");
-        //System.out.println("DATOS ENC ------------------- "+encryptedData);
-        //System.out.println("DATOS DEC ------------------- "+this.encryptor2.decrypt(encryptedData));
-        //swo0jB5xl7+RetLDsNX2Jpjp+iuiC9CmEGMyr1FfZf8sDLoYaKk2gg==
-        //String decryptedData = encryptor.decrypt("swo0jB5xl7+RetLDsNX2Jpjp+iuiC9CmEGMyr1FfZf8sDLoYaKk2gg==");
-        //String [] splitedData = decryptedData.split("-");
-        //Log.d("ID ----------- ", splitedData[0]+" "+splitedData[1]+" "+splitedData[2]);
-
-        accessSelectionActivity.accessController = AccessController.getInstance(this, this);
+        AccessSelectionActivity.accessController = AccessController.getInstance();
+        AccessSelectionActivity.accessController.setAccessView(this);
+        AccessSelectionActivity.accessController.setErrorView(this);
 
         this.selectedAccess = findViewById(R.id.selectedAccess);
 
@@ -59,12 +52,11 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                accessSelectionActivity.access = (Acceso) accessList.getItemAtPosition(i);
-                selectedAccess.setText(accessSelectionActivity.access.getDescripcion());
-
+                AccessSelectionActivity.access = (Acceso) accessList.getItemAtPosition(i);
+                selectedAccess.setText(AccessSelectionActivity.access.getDescripcion());
                 try
                 {
-                    savePreConfigAccess(accessSelectionActivity.access);
+                    savePreConfigAccess(AccessSelectionActivity.access);
                 }
                 catch (IOException e)
                 {
@@ -72,40 +64,69 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
                 }
                 finally
                 {
-                    Intent readyToScanActivity = new Intent(accessSelectionActivity.this, ReadyToScan.class);
-                    readyToScanActivity.putExtra("access", accessSelectionActivity.access.toString());
-                    startActivity(readyToScanActivity);
+                    Intent readyToScanActivityIntent = new Intent(AccessSelectionActivity.this, ReadyToScanActivity.class);
+                    readyToScanActivityIntent.putExtra("access", AccessSelectionActivity.access.toString());
+                    startActivity(readyToScanActivityIntent);
                 }
             }
         });
 
         try
         {
-            accessSelectionActivity.access = this.loadPreConfigAccess();
-            this.selectedAccess.setText(accessSelectionActivity.access.getDescripcion());
-            Intent readyToScanActivity = new Intent(accessSelectionActivity.this, ReadyToScan.class);
-            readyToScanActivity.putExtra("access", accessSelectionActivity.access.toString());
-            startActivity(readyToScanActivity);
+            AccessSelectionActivity.access = this.loadPreConfigAccess();
+            this.selectedAccess.setText(AccessSelectionActivity.access.getDescripcion());
+            this.hasAccessPreSelected = true;
         }
         catch (IOException e)
         {
+            this.hasAccessPreSelected = false;
             e.printStackTrace();
         }
-        //search for access online
-        accessSelectionActivity.accessController.getAccesses();
     }
 
     @Override
     protected void onStart()
     {
         super.onStart();
+        AccessSelectionActivity.accessController.getAccesses();
 
+        Intent readyToScanActivityIntent = new Intent(AccessSelectionActivity.this, ReadyToScanActivity.class);
+
+        if(this.hasAccessPreSelected)
+        {
+            readyToScanActivityIntent.putExtra("access", AccessSelectionActivity.access.toString());
+            startActivity(readyToScanActivityIntent);
+        }
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
     }
 
     private Acceso loadPreConfigAccess() throws IOException
@@ -143,7 +164,12 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
 
     public static Acceso getSelectedAccess()
     {
-        return accessSelectionActivity.access;
+        return AccessSelectionActivity.access;
+    }
+
+    public static void setHasAccessPreSelected(boolean val)
+    {
+        AccessSelectionActivity.hasAccessPreSelected = val;
     }
 
     @Override
@@ -165,13 +191,13 @@ public class accessSelectionActivity extends AppCompatActivity implements Access
     @Override
     public void anotherResponse(int code)
     {
-        Toast.makeText(accessSelectionActivity.this, "UNSPECTED RESPONSE CODE: "+code, Toast.LENGTH_LONG).show();
+        Toast.makeText(AccessSelectionActivity.this, "UNSPECTED RESPONSE CODE: "+code, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void error(String message)
     {
-        Toast.makeText(accessSelectionActivity.this, "ERROR: "+message, Toast.LENGTH_LONG).show();
+        Toast.makeText(AccessSelectionActivity.this, "ERROR: "+message, Toast.LENGTH_LONG).show();
 
         List<Acceso> list = new ArrayList<>();
         Acceso aux = new Acceso();

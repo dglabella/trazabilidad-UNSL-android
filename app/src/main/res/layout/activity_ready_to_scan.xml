@@ -5,7 +5,7 @@
     android:id="@+id/selectedAccess"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ReadyToScan">
+    tools:context=".activities.ReadyToScanActivity">
 
     <TextView
         android:id="@+id/accessSelected"
