@@ -7,17 +7,28 @@
     android:layout_height="match_parent"
     tools:context=".activities.ReadyToScanActivity">
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="250dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/unsl_banner" />
+
     <TextView
         android:id="@+id/accessSelected"
         android:layout_width="408dp"
         android:layout_height="41dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="50dp"
         android:text="VACIO"
         android:textAlignment="center"
-        android:textSize="24sp"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <Button
         android:id="@+id/initScan"

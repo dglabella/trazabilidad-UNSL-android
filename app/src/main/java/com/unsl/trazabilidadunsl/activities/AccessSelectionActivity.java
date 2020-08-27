@@ -7,9 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import com.unsl.trazabilidadunsl.R;
+import com.unsl.trazabilidadunsl.R;  
 import com.unsl.trazabilidadunsl.controllers.AccessController;
 import com.unsl.trazabilidadunsl.views.AccessView;
 import com.unsl.trazabilidadunsl.models.Acceso;
@@ -32,7 +31,6 @@ public class AccessSelectionActivity extends AppCompatActivity implements Access
     private static Acceso access;
     private static boolean hasAccessPreSelected = false;
 
-    private TextView selectedAccess;
     private ListView accessList;
 
     @Override
@@ -45,15 +43,12 @@ public class AccessSelectionActivity extends AppCompatActivity implements Access
         AccessSelectionActivity.accessController.setAccessView(this);
         AccessSelectionActivity.accessController.setErrorView(this);
 
-        this.selectedAccess = findViewById(R.id.selectedAccess);
-
         this.accessList = findViewById(R.id.accessList);
         this.accessList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
                 AccessSelectionActivity.access = (Acceso) accessList.getItemAtPosition(i);
-                selectedAccess.setText(AccessSelectionActivity.access.getDescripcion());
                 try
                 {
                     savePreConfigAccess(AccessSelectionActivity.access);
@@ -74,7 +69,6 @@ public class AccessSelectionActivity extends AppCompatActivity implements Access
         try
         {
             AccessSelectionActivity.access = this.loadPreConfigAccess();
-            this.selectedAccess.setText(AccessSelectionActivity.access.getDescripcion());
             this.hasAccessPreSelected = true;
         }
         catch (IOException e)
