@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,10 +16,13 @@ import com.unsl.trazabilidadunsl.controllers.StatisticsController;
 import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.models.Estadisticas;
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
+import com.unsl.trazabilidadunsl.models.RegistroVisitante;
+import com.unsl.trazabilidadunsl.utils.VisitorPDF417data;
 import com.unsl.trazabilidadunsl.views.ErrorView;
 import com.unsl.trazabilidadunsl.views.RegisterView;
 import com.unsl.trazabilidadunsl.views.StatisticsView;
 import java.util.Objects;
+import com.google.zxing.BarcodeFormat;
 //import org.jasypt.util.text.StrongTextEncryptor;
 
 public class ReadyToScanActivity extends AppCompatActivity implements RegisterView, StatisticsView, ErrorView
@@ -33,6 +35,7 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
     private Acceso access;
     private static RegisterController registerController;
     private static StatisticsController statisticsController;
+
     //private StrongTextEncryptor encryptor;
 
     @Override
@@ -131,22 +134,41 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result!=null && result.getContents()!=null)
         {
-            //System.out.println("\n\n\n"+result.getContents()+"\n\n\n");
-            RegistroCellPhone rcp = new RegistroCellPhone();
-            rcp.setIdAcceso((long)this.access.getId());
-            rcp.setEncryptedData(result.getContents());
-            ReadyToScanActivity.registerController.createRegister(rcp);
+            //System.out.println("----------------------------- "+result.getFormatName()+" ------------------------------");
+            //System.out.println("====================//"+result.getContents()+"//===================");
+            if(result.getFormatName().equals(BarcodeFormat.PDF_417.toString()))
+            {
+                RegistroVisitante rv = new RegistroVisitante();
+                String[] splitedData = result.getContents().split(String.valueOf(VisitorPDF417data.PDF_417_CHAR_SEPARATOR));
+                rv.setDni(Integer.parseInt(splitedData[VisitorPDF417data.DNI]));
+                rv.setApellido(splitedData[VisitorPDF417data.APELLIDO]);
+                rv.setAcceso(this.access);
+                rv.setFkAcceso((long)this.access.getId());
+                rv.setNombre(splitedData[VisitorPDF417data.NOMBRE]);
+                ReadyToScanActivity.registerController.createRegister(rv);
+            }
+            else if (result.getFormatName().equals(BarcodeFormat.QR_CODE.toString()))
+            {
+                RegistroCellPhone rcp = new RegistroCellPhone();
+                rcp.setIdAcceso((long)this.access.getId());
+                rcp.setEncryptedData(result.getContents());
+                ReadyToScanActivity.registerController.createRegister(rcp);
+            }
+            else
+            {
+                Toast.makeText(ReadyToScanActivity.this, "ERROR, CÓDIGO INVALIDO", Toast.LENGTH_LONG).show();
+            }
             //Toast.makeText(ReadyToScanActivity.this, result.getContents(), Toast.LENGTH_LONG).show();
         }
         else
         {
-            Log.d("ERROR ------","cannot scan");
-            Toast.makeText(ReadyToScanActivity.this, "ERROR, no scan result", Toast.LENGTH_LONG).show();
+            Toast.makeText(ReadyToScanActivity.this, "ERROR, NO HAY RESULTADOS DE SCANEO", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -157,13 +179,12 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
     }
 
     @Override
-    public void registerDone(RegistroCellPhone registroCellPhone)
+    public void registerDone()
     {
         //Toast.makeText(ReadyToScanActivity.this, "Registro realizado: "+
-        //        this.personScanned.getDni()+" "+this.personScanned.getNombre()+" "+
+        //       this.personScanned.getDni()+" "+this.personScanned.getNombre()+" "+
         //       this.personScanned.getApellido(), Toast.LENGTH_LONG).show();
         Toast.makeText(ReadyToScanActivity.this, "Registro realizado", Toast.LENGTH_LONG).show();
-        ReadyToScanActivity.statisticsController.getStatistics(this.access.getId());
     }
 
     @Override

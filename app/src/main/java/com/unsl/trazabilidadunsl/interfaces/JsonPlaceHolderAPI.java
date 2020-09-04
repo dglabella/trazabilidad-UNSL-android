@@ -4,6 +4,7 @@ import com.unsl.trazabilidadunsl.models.Acceso;
 import com.unsl.trazabilidadunsl.models.Estadisticas;
 import com.unsl.trazabilidadunsl.models.Persona;
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
+import com.unsl.trazabilidadunsl.models.RegistroVisitante;
 
 import java.util.List;
 import retrofit2.Call;
@@ -29,4 +30,7 @@ public interface JsonPlaceHolderAPI
 
     @GET("registros/statistics")
     Call<Estadisticas> getStatistics(@Query("accesoId") Integer accessId);
+
+    @POST("registrosvisitantes")
+    Call<RegistroVisitante> postVisitorRegistration(@Body RegistroVisitante visitorRegister);
 }

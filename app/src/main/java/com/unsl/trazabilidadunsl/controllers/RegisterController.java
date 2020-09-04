@@ -1,6 +1,7 @@
 package com.unsl.trazabilidadunsl.controllers;
 
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
+import com.unsl.trazabilidadunsl.models.RegistroVisitante;
 import com.unsl.trazabilidadunsl.services.RegisterService;
 import com.unsl.trazabilidadunsl.views.ErrorView;
 import com.unsl.trazabilidadunsl.views.RegisterView;
@@ -10,7 +11,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterController implements Callback<RegistroCellPhone>
+public class RegisterController<T> implements Callback<T>
 {
     private static RegisterController registerController;
 
@@ -25,15 +26,18 @@ public class RegisterController implements Callback<RegistroCellPhone>
         return RegisterController.registerController;
     }
 
-    public RegisterView getRegisterView() {
+    public RegisterView getRegisterView()
+    {
         return registerView;
     }
 
-    public void setRegisterView(RegisterView registerView) {
+    public void setRegisterView(RegisterView registerView)
+    {
         this.registerView = registerView;
     }
 
-    public ErrorView getErrorView() {
+    public ErrorView getErrorView()
+    {
         return errorView;
     }
 
@@ -43,16 +47,22 @@ public class RegisterController implements Callback<RegistroCellPhone>
 
     public void createRegister(RegistroCellPhone registroCellPhone)
     {
-        RegisterService.setCallBack(this);
+        RegisterService.setRegistroCellPhoneCallBack((Callback<RegistroCellPhone>) this);
         RegisterService.postRegister(registroCellPhone);
     }
 
+    public void createRegister(RegistroVisitante VisitorRegistration)
+    {
+        RegisterService.setRegistroVisitanteCallBack((Callback<RegistroVisitante>) this);
+        RegisterService.postRegister(VisitorRegistration);
+    }
+
     @Override
-    public void onResponse(Call<RegistroCellPhone> call, Response<RegistroCellPhone> response)
+    public void onResponse(Call<T> call, Response<T> response)
     {
         if(response.isSuccessful())
         {
-            this.registerView.registerDone(response.body());
+            this.registerView.registerDone();
         }
         else
         {
@@ -61,7 +71,7 @@ public class RegisterController implements Callback<RegistroCellPhone>
     }
 
     @Override
-    public void onFailure(Call<RegistroCellPhone> call, Throwable t)
+    public void onFailure(Call<T> call, Throwable t)
     {
         String message = "Register -> ";
         if (t instanceof SocketTimeoutException)

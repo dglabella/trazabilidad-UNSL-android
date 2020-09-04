@@ -4,5 +4,5 @@ import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 
 public interface RegisterView
 {
-    void registerDone(RegistroCellPhone registroCellPhone);
+    void registerDone();
 }
