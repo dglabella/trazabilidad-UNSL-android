@@ -154,6 +154,7 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
             this.personScanned.setApellido("Person");
             this.registerController.createRegister(personScanned.getId());
             */
+            //System.out.println("\n\n\n"+result.getContents()+"\n\n\n");
             RegistroCellPhone rcp = new RegistroCellPhone();
             rcp.setIdAcceso((long)this.access.getId());
             rcp.setEncryptedData(result.getContents());
