@@ -72,7 +72,7 @@ public class RegisterController implements Callback<RegistroCellPhone>
         else if (t instanceof IOException)
         {
             // "Timeout";
-            message += "Timeout";
+            message += "ENTRADA INVALIDA.";
         }
         else
         {
