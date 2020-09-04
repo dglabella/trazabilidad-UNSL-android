@@ -136,24 +136,6 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result!=null && result.getContents()!=null)
         {
-            /*
-            String decryptedData = encryptor.decrypt(result.getContents());
-            String [] splitedData = decryptedData.split("-");
-            this.personScanned = new Persona();
-            this.personScanned.setId(Integer.parseInt(splitedData[0]));
-            this.personScanned.setDni(Integer.parseInt(splitedData[1]));
-            this.personScanned.setNombre(splitedData[2]);
-            this.personScanned.setApellido(splitedData[3]);
-            this.registerController.createRegister(personScanned.getId());
-            */
-            /*
-            this.personScanned = new Persona();
-            this.personScanned.setId(9999);
-            this.personScanned.setDni(99999999);
-            this.personScanned.setNombre("Fake");
-            this.personScanned.setApellido("Person");
-            this.registerController.createRegister(personScanned.getId());
-            */
             //System.out.println("\n\n\n"+result.getContents()+"\n\n\n");
             RegistroCellPhone rcp = new RegistroCellPhone();
             rcp.setIdAcceso((long)this.access.getId());
