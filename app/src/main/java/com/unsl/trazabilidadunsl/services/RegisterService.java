@@ -1,7 +1,6 @@
 package com.unsl.trazabilidadunsl.services;
 
 import com.unsl.trazabilidadunsl.activities.AccessSelectionActivity;
-import com.unsl.trazabilidadunsl.controllers.RegisterController;
 import com.unsl.trazabilidadunsl.interfaces.JsonPlaceHolderAPI;
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 import com.unsl.trazabilidadunsl.models.RegistroVisitante;
@@ -21,18 +20,6 @@ public class RegisterService
     private final static int REQUEST_WRITE_TIMEOUT_TOLERANCE = 5;
     private static Callback<RegistroCellPhone> registroCellPhoneCallBack;
     private static Callback<RegistroVisitante> registroVisitanteCallBack;
-
-    /*
-    public static void setCallBack(Callback<RegistroVisitante> callBack)
-    {
-        RegisterService.registroCellPhoneCallBack = callBack;
-    }
-
-    public static void setCallBack(Callback<RegistroVisitante> callBack)
-    {
-        RegisterService.registroVisitanteCallBack = callBack;
-    }
-    */
 
     public static void setRegistroCellPhoneCallBack(Callback<RegistroCellPhone> callBack)
     {
