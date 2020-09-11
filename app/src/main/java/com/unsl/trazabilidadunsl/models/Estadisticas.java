@@ -4,6 +4,9 @@ public class Estadisticas
 {
     private Integer totales;
     private Integer enTransito;
+    private Integer totalesVisitantes;
+
+    private Integer enTransitoVisitantes;
 
     public Integer getTotales()
     {
@@ -22,6 +25,22 @@ public class Estadisticas
     public void setEnTransito(Integer enTransito)
     {
         this.enTransito = enTransito;
+    }
+
+    public Integer getTotalesVisitantes() {
+        return totalesVisitantes;
+    }
+
+    public void setTotalesVisitantes(Integer totalesVisitantes) {
+        this.totalesVisitantes = totalesVisitantes;
+    }
+
+    public Integer getEnTransitoVisitantes() {
+        return enTransitoVisitantes;
+    }
+
+    public void setEnTransitoVisitantes(Integer enTransitoVisitantes) {
+        this.enTransitoVisitantes = enTransitoVisitantes;
     }
 
     @Override

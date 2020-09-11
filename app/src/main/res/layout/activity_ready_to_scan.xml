@@ -18,34 +18,35 @@
 
     <TextView
         android:id="@+id/accessSelected"
-        android:layout_width="408dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="VACIO"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <Button
         android:id="@+id/initScan"
-        android:layout_width="135dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="104dp"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
         android:text="Iniciar Scanner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalVisitor" />
 
     <TextView
-        android:id="@+id/stats"
-        android:layout_width="407dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="112dp"
-        android:text="Transito:"
+        android:id="@+id/totalNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Total en transito:"
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,15 +55,63 @@
 
     <TextView
         android:id="@+id/total"
-        android:layout_width="409dp"
-        android:layout_height="39dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Ingresos totales:"
         android:textAlignment="center"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/initScan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stats"
-        app:layout_constraintVertical_bias="0.322" />
+        app:layout_constraintTop_toBottomOf="@+id/totalNow" />
+
+    <TextView
+        android:id="@+id/totalPersonalNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Personal:"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total" />
+
+    <TextView
+        android:id="@+id/totalPersonal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ingresos personal:"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalPersonalNow" />
+
+    <TextView
+        android:id="@+id/totalVisitorsNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Visitantes:"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalPersonal" />
+
+    <TextView
+        android:id="@+id/totalVisitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ingresos Visitantes:"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalVisitorsNow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

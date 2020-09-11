@@ -28,8 +28,13 @@ import com.google.zxing.BarcodeFormat;
 public class ReadyToScanActivity extends AppCompatActivity implements RegisterView, StatisticsView, ErrorView
 {
     private TextView selectedAccess;
-    private TextView stats;
+    private TextView totalNow;
     private TextView total;
+    private TextView totalPersonalNow;
+    private TextView totalPersonal;
+    private TextView totalVisitorsNow;
+    private TextView totalVisitors;
+
     private Button initScan;
 
     private Acceso access;
@@ -53,8 +58,12 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
         this.selectedAccess = findViewById(R.id.accessSelected);
         this.selectedAccess.setText(this.access.getDescripcion());
 
-        this.stats = findViewById(R.id.stats);
+        this.totalNow = findViewById(R.id.totalNow);
         this.total = findViewById(R.id.total);
+        this.totalPersonalNow = findViewById(R.id.totalPersonalNow);
+        this.totalPersonal = findViewById(R.id.totalPersonal);
+        this.totalVisitorsNow = findViewById(R.id.totalVisitorsNow);
+        this.totalVisitors = findViewById(R.id.totalVisitor);
 
         ReadyToScanActivity.registerController =  RegisterController.getInstance();
         ReadyToScanActivity.registerController.setRegisterView(this);
@@ -196,7 +205,16 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
     @Override
     public void reportStatistics(Estadisticas statistics)
     {
-        this.stats.setText("Transito: "+statistics.getEnTransito().toString());
-        this.total.setText("Ingresos totales: "+statistics.getTotales().toString());
+        int totalNow = statistics.getEnTransito()+statistics.getEnTransitoVisitantes();
+        int total = statistics.getTotales()+statistics.getTotalesVisitantes();
+
+        this.totalNow.setText("Transito actual: "+totalNow);
+        this.total.setText("Ingresos totales: "+total);
+
+        this.totalPersonalNow.setText("Personal actual: "+statistics.getEnTransito());
+        this.totalPersonal.setText("Ingresos personal: "+statistics.getTotales());
+
+        this.totalVisitorsNow.setText("Visitantes actuales: "+statistics.getEnTransitoVisitantes());
+        this.totalVisitors.setText("Ingresos Visitantes: "+statistics.getTotalesVisitantes());
     }
 }
