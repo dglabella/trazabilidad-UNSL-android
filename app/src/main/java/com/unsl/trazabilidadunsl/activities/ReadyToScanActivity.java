@@ -18,6 +18,7 @@ import com.unsl.trazabilidadunsl.models.Estadisticas;
 import com.unsl.trazabilidadunsl.models.RegistroCellPhone;
 import com.unsl.trazabilidadunsl.models.RegistroVisitante;
 import com.unsl.trazabilidadunsl.utils.VisitorPDF417data;
+import com.unsl.trazabilidadunsl.utils.VisitorPDF417dataOld;
 import com.unsl.trazabilidadunsl.views.ErrorView;
 import com.unsl.trazabilidadunsl.views.RegisterView;
 import com.unsl.trazabilidadunsl.views.StatisticsView;
@@ -149,17 +150,28 @@ public class ReadyToScanActivity extends AppCompatActivity implements RegisterVi
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result!=null && result.getContents()!=null)
         {
-            //System.out.println("----------------------------- "+result.getFormatName()+" ------------------------------");
-            //System.out.println("====================//"+result.getContents()+"//===================");
+            System.out.println("----------------------------- "+result.getFormatName()+" ------------------------------");
+            System.out.println("====================//"+result.getContents()+"//===================");
             if(result.getFormatName().equals(BarcodeFormat.PDF_417.toString()))
             {
                 RegistroVisitante rv = new RegistroVisitante();
                 String[] splitedData = result.getContents().split(String.valueOf(VisitorPDF417data.PDF_417_CHAR_SEPARATOR));
-                rv.setDni(Integer.parseInt(splitedData[VisitorPDF417data.DNI]));
-                rv.setApellido(splitedData[VisitorPDF417data.APELLIDO]);
-                rv.setAcceso(this.access);
-                rv.setFkAcceso((long)this.access.getId());
-                rv.setNombre(splitedData[VisitorPDF417data.NOMBRE]);
+                if(result.getContents().charAt(0) == VisitorPDF417dataOld.PDF_417_CHAR_SEPARATOR)
+                {
+                    rv.setDni(Integer.parseInt(splitedData[VisitorPDF417dataOld.DNI].trim()));
+                    rv.setApellido(splitedData[VisitorPDF417dataOld.APELLIDO]);
+                    rv.setAcceso(this.access);
+                    rv.setFkAcceso((long)this.access.getId());
+                    rv.setNombre(splitedData[VisitorPDF417dataOld.NOMBRE]);
+                }
+                else
+                {
+                    rv.setDni(Integer.parseInt(splitedData[VisitorPDF417data.DNI]));
+                    rv.setApellido(splitedData[VisitorPDF417data.APELLIDO]);
+                    rv.setAcceso(this.access);
+                    rv.setFkAcceso((long)this.access.getId());
+                    rv.setNombre(splitedData[VisitorPDF417data.NOMBRE]);
+                }
                 ReadyToScanActivity.registerController.createRegister(rv);
             }
             else if (result.getFormatName().equals(BarcodeFormat.QR_CODE.toString()))
