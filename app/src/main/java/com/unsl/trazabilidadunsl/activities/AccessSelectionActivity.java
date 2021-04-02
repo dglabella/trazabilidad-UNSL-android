@@ -24,7 +24,7 @@ import java.util.List;
 
 public class AccessSelectionActivity extends AppCompatActivity implements AccessView, ErrorView
 {
-    public static String API_HOSTNAME = "http://104.198.43.227:8081/";
+    public static String API_HOSTNAME = "http://192.168.96.99:8081/";
     //public static String API_HOSTNAME = "http://190.114.77.252:8080/"; //Cristian
     private final String PRECONFIG_ACCESS_FILE_NAME = "preConfigAccess.txt";
     private static AccessController accessController;
